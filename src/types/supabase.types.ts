@@ -33,7 +33,137 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      leaderboard_races: {
+        Row: {
+          leaderboard_id: string
+          race_id: string
+          weight: number
+        }
+        Insert: {
+          leaderboard_id: string
+          race_id: string
+          weight?: number
+        }
+        Update: {
+          leaderboard_id?: string
+          race_id?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'leaderboard_races_leaderboard_id_fkey'
+            columns: ['leaderboard_id']
+            isOneToOne: false
+            referencedRelation: 'leaderboards'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'leaderboard_races_race_id_fkey'
+            columns: ['race_id']
+            isOneToOne: false
+            referencedRelation: 'races'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      leaderboards: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      race_results: {
+        Row: {
+          created_at: string
+          id: string
+          player_name: string
+          points: number
+          position: number
+          race_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          player_name: string
+          points: number
+          position: number
+          race_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          player_name?: string
+          points?: number
+          position?: number
+          race_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'race_results_race_id_fkey'
+            columns: ['race_id']
+            isOneToOne: false
+            referencedRelation: 'races'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      races: {
+        Row: {
+          created_at: string
+          created_by: string
+          date: string | null
+          id: string
+          location: string | null
+          name: string
+          status: Database['public']['Enums']['race_status']
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          date?: string | null
+          id?: string
+          location?: string | null
+          name: string
+          status?: Database['public']['Enums']['race_status']
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          date?: string | null
+          id?: string
+          location?: string | null
+          name?: string
+          status?: Database['public']['Enums']['race_status']
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -42,7 +172,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      race_status: 'pending' | 'ongoing' | 'finished'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -170,6 +300,8 @@ export const Constants = {
     Enums: {},
   },
   public: {
-    Enums: {},
+    Enums: {
+      race_status: ['pending', 'ongoing', 'finished'],
+    },
   },
 } as const
