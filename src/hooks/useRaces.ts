@@ -25,7 +25,7 @@ export const useCreateRace = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (dto: CreateRaceDto) => createRace(dto),
+    mutationFn: (dto: Omit<CreateRaceDto, 'created_by'>) => createRace(dto),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: RACE_QUERY_KEYS.all })
     },

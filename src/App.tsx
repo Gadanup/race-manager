@@ -1,19 +1,18 @@
 import React from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { AppShell } from '@/components/layout'
 import { ProtectedRoute } from '@/components/layout'
 import { ROUTES } from '@/helpers/constants'
+import { LoginPage } from '@/pages/LoginPage'
+import { RaceDetailPage } from '@/pages/RaceDetailPage'
+import { RacesPage } from '@/pages/RacesPage'
+import { LeaderboardsPage } from '@/pages/LeaderboardsPage'
 
-// Pages — these are placeholder divs until Phase 5/6/7
-const RacesPage = () => <div style={{ padding: 32, color: 'white' }}>Races Page</div>
-const RaceDetailPage = () => <div style={{ padding: 32, color: 'white' }}>Race Detail Page</div>
-const LeaderboardsPage = () => <div style={{ padding: 32, color: 'white' }}>Leaderboards Page</div>
+// Still placeholder
 const LeaderboardDetailPage = () => (
   <div style={{ padding: 32, color: 'white' }}>Leaderboard Detail Page</div>
 )
-const LoginPage = () => <div style={{ padding: 32, color: 'white' }}>Login Page</div>
 
 function App() {
   return (

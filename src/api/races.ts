@@ -20,8 +20,17 @@ export const getRaceById = async (id: string) => {
   return data
 }
 
-export const createRace = async (dto: CreateRaceDto) => {
-  const { data, error } = await supabase.from('races').insert(dto).select().single()
+export const createRace = async (dto: Omit<CreateRaceDto, 'created_by'>) => {
+  const { data: sessionData } = await supabase.auth.getSession()
+  const userId = sessionData.session?.user.id
+
+  if (!userId) throw new Error('User not authenticated')
+
+  const { data, error } = await supabase
+    .from('races')
+    .insert({ ...dto, created_by: userId })
+    .select()
+    .single()
 
   if (error) throw error
 
