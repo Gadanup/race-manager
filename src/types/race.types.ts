@@ -1,4 +1,4 @@
-import type { Tables, TablesInsert, TablesUpdate, Enums } from '@/types/supabase.types'
+import type { Enums, Tables, TablesInsert, TablesUpdate } from '@/types/supabase.types'
 
 export type RaceStatus = Enums<'race_status'>
 
