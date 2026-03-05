@@ -4,15 +4,11 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppShell } from '@/components/layout'
 import { ProtectedRoute } from '@/components/layout'
 import { ROUTES } from '@/helpers/constants'
+import { LeaderboardDetailPage } from '@/pages/LeaderboardDetailPage'
+import { LeaderboardsPage } from '@/pages/LeaderboardsPage'
 import { LoginPage } from '@/pages/LoginPage'
 import { RaceDetailPage } from '@/pages/RaceDetailPage'
 import { RacesPage } from '@/pages/RacesPage'
-import { LeaderboardsPage } from '@/pages/LeaderboardsPage'
-
-// Still placeholder
-const LeaderboardDetailPage = () => (
-  <div style={{ padding: 32, color: 'white' }}>Leaderboard Detail Page</div>
-)
 
 function App() {
   return (

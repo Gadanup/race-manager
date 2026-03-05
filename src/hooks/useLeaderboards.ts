@@ -102,6 +102,13 @@ export const useCreateLeaderboard = () => {
   })
 }
 
+export const useGetLeaderboardRaces = (leaderboardId: string) =>
+  useQuery({
+    queryKey: [...LEADERBOARD_QUERY_KEYS.detail(leaderboardId), 'races'] as const,
+    queryFn: () => getLeaderboardRaces(leaderboardId),
+    enabled: Boolean(leaderboardId),
+  })
+
 export const useDeleteLeaderboard = () => {
   const queryClient = useQueryClient()
 
