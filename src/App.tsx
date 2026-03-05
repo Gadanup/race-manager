@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
 function App() {
-  return <div>Race Manager</div>;
+  return <div>Race Manager</div>
 }
 
-export default App;
+export default App
