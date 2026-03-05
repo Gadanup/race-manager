@@ -15,6 +15,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { ConfirmDialog } from '@/components/shared'
 import { useDeleteLeaderboard } from '@/hooks'
 import { LEADERBOARD_LABELS, UI_LABELS } from '@/helpers/constants'
+import { useSnackbar } from '@/components/shared/SnackbarProvider'
 import type { Leaderboard } from '@/types/leaderboard.types'
 
 interface LeaderboardCardProps {
@@ -43,9 +44,14 @@ export const LeaderboardCard = ({ leaderboard, onClick }: LeaderboardCardProps) 
     setIsDeleteOpen(true)
   }
 
+  const { showSnackbar } = useSnackbar()
+
   const handleDeleteConfirm = () => {
     deleteLeaderboard(leaderboard.id, {
-      onSuccess: () => setIsDeleteOpen(false),
+      onSuccess: () => {
+        showSnackbar(LEADERBOARD_LABELS.deleteSuccess)
+        setIsDeleteOpen(false)
+      },
     })
   }
 

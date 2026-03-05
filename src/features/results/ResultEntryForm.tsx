@@ -5,6 +5,8 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
 import { ErrorAlert, LoadingSpinner, PointsBadge } from '@/components/shared'
 import { useGetResults, useUpsertResults } from '@/hooks'
 import { MAX_RACE_POSITIONS, POINTS_BY_POSITION, RACE_LABELS } from '@/helpers/constants'
+import { useSnackbar } from '@/components/shared/SnackbarProvider'
+
 import type { ResultEntry } from '@/types/result.types'
 
 interface ResultEntryFormProps {
@@ -30,6 +32,7 @@ export const ResultEntryForm = ({ raceId, isLocked }: ResultEntryFormProps) => {
 
   const { data: existingResults, isLoading, isError } = useGetResults(raceId)
   const { mutate: upsertResults, isPending: isSaving } = useUpsertResults(raceId)
+  const { showSnackbar } = useSnackbar()
 
   // Pre-fill from existing results
   useEffect(() => {
@@ -53,7 +56,9 @@ export const ResultEntryForm = ({ raceId, isLocked }: ResultEntryFormProps) => {
   }
 
   const handleSave = () => {
-    upsertResults(entries)
+    upsertResults(entries, {
+      onSuccess: () => showSnackbar(RACE_LABELS.resultsSuccess),
+    })
   }
 
   const filledCount = entries.filter((entry) => entry.playerName.trim() !== '').length

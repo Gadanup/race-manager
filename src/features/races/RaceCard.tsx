@@ -16,6 +16,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { ConfirmDialog, StatusChip } from '@/components/shared'
 import { useDeleteRace } from '@/hooks'
 import { RACE_LABELS, UI_LABELS } from '@/helpers/constants'
+import { useSnackbar } from '@/components/shared/SnackbarProvider'
+
 import type { Race } from '@/types/race.types'
 
 import { RaceFormDrawer } from './RaceFormDrawer'
@@ -52,9 +54,14 @@ export const RaceCard = ({ race, onClick }: RaceCardProps) => {
     setIsDeleteOpen(true)
   }
 
+  const { showSnackbar } = useSnackbar()
+
   const handleDeleteConfirm = () => {
     deleteRace(race.id, {
-      onSuccess: () => setIsDeleteOpen(false),
+      onSuccess: () => {
+        showSnackbar(RACE_LABELS.deleteSuccess)
+        setIsDeleteOpen(false)
+      },
     })
   }
 

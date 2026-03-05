@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
 import { useCreateRace, useUpdateRace } from '@/hooks'
+import { useSnackbar } from '@/components/shared/SnackbarProvider'
 import { RACE_LABELS, RACE_STATUS_OPTIONS, UI_LABELS } from '@/helpers/constants'
 import type { Race } from '@/types/race.types'
 
@@ -30,6 +31,8 @@ export const RaceFormDrawer = ({ open, race, onClose }: RaceFormDrawerProps) => 
   const { mutate: updateRace, isPending: isUpdating } = useUpdateRace(race?.id ?? '')
 
   const isPending = isCreating || isUpdating
+
+  const { showSnackbar } = useSnackbar()
 
   const {
     register,
@@ -67,7 +70,12 @@ export const RaceFormDrawer = ({ open, race, onClose }: RaceFormDrawerProps) => 
           date: values.date ?? null,
           status: values.status,
         },
-        { onSuccess: onClose },
+        {
+          onSuccess: () => {
+            showSnackbar(RACE_LABELS.updateSuccess)
+            onClose()
+          },
+        },
       )
     } else {
       createRace(
@@ -78,7 +86,12 @@ export const RaceFormDrawer = ({ open, race, onClose }: RaceFormDrawerProps) => 
           status: values.status,
           created_by: '', // injected server-side via RLS — placeholder
         },
-        { onSuccess: onClose },
+        {
+          onSuccess: () => {
+            showSnackbar(RACE_LABELS.createSuccess)
+            onClose()
+          },
+        },
       )
     }
   }

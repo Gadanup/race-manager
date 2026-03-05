@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Box,
   Divider,
@@ -10,10 +10,16 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
+  useMediaQuery,
+  useTheme,
+  BottomNavigation,
+  BottomNavigationAction,
+  Paper,
 } from '@mui/material'
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
 import FlagIcon from '@mui/icons-material/Flag'
 import LogoutIcon from '@mui/icons-material/Logout'
+import MenuIcon from '@mui/icons-material/Menu'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useSignOut } from '@/hooks'
@@ -32,26 +38,18 @@ export const Sidebar = ({ width }: SidebarProps) => {
   const navigate = useNavigate()
   const location = useLocation()
   const { handleSignOut } = useSignOut()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   const isActive = (route: string) => location.pathname.startsWith(route)
 
-  return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        width,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width,
-          boxSizing: 'border-box',
-          bgcolor: 'background.paper',
-          borderRight: '1px solid',
-          borderColor: 'divider',
-          display: 'flex',
-          flexDirection: 'column',
-        },
-      }}
-    >
+  const activeRouteIndex = NAV_ITEMS.findIndex((navItem) =>
+    location.pathname.startsWith(navItem.route),
+  )
+
+  const drawerContent = (
+    <>
       {/* Logo */}
       <Box
         sx={{
@@ -59,14 +57,24 @@ export const Sidebar = ({ width }: SidebarProps) => {
           py: 2.5,
           borderBottom: '1px solid',
           borderColor: 'divider',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
         }}
       >
-        <Typography variant="h3" color="primary" sx={{ lineHeight: 1 }}>
-          Race
-        </Typography>
-        <Typography variant="h3" color="text.primary" sx={{ lineHeight: 1 }}>
-          Manager
-        </Typography>
+        <Box>
+          <Typography variant="h3" color="primary" sx={{ lineHeight: 1 }}>
+            Race
+          </Typography>
+          <Typography variant="h3" color="text.primary" sx={{ lineHeight: 1 }}>
+            Manager
+          </Typography>
+        </Box>
+        {isMobile && (
+          <IconButton onClick={() => setMobileOpen(false)} sx={{ color: 'text.secondary' }}>
+            <MenuIcon />
+          </IconButton>
+        )}
       </Box>
 
       {/* Nav items */}
@@ -74,7 +82,10 @@ export const Sidebar = ({ width }: SidebarProps) => {
         {NAV_ITEMS.map((navItem) => (
           <ListItem key={navItem.route} disablePadding sx={{ mb: 0.5 }}>
             <ListItemButton
-              onClick={() => navigate(navItem.route)}
+              onClick={() => {
+                navigate(navItem.route)
+                setMobileOpen(false)
+              }}
               selected={isActive(navItem.route)}
               sx={{
                 borderRadius: 0,
@@ -86,9 +97,7 @@ export const Sidebar = ({ width }: SidebarProps) => {
                   '& .MuiListItemIcon-root': { color: 'primary.main' },
                   '& .MuiListItemText-primary': { color: 'primary.main' },
                 },
-                '&:hover': {
-                  bgcolor: 'rgba(255,255,255,0.04)',
-                },
+                '&:hover': { bgcolor: 'rgba(255,255,255,0.04)' },
               }}
             >
               <ListItemIcon sx={{ minWidth: 36, color: 'text.secondary' }}>
@@ -104,14 +113,7 @@ export const Sidebar = ({ width }: SidebarProps) => {
       </List>
 
       {/* Sign out */}
-      <Box
-        sx={{
-          px: 2,
-          py: 2,
-          borderTop: '1px solid',
-          borderColor: 'divider',
-        }}
-      >
+      <Box sx={{ px: 2, py: 2, borderTop: '1px solid', borderColor: 'divider' }}>
         <Divider sx={{ mb: 1.5 }} />
         <ListItemButton
           onClick={handleSignOut}
@@ -132,6 +134,115 @@ export const Sidebar = ({ width }: SidebarProps) => {
           <ListItemText primary="Sign Out" primaryTypographyProps={{ variant: 'subtitle2' }} />
         </ListItemButton>
       </Box>
+    </>
+  )
+
+  // ── Mobile layout ──────────────────────────────────────────────
+  if (isMobile) {
+    return (
+      <>
+        {/* Top bar with hamburger */}
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 56,
+            bgcolor: 'background.paper',
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+            display: 'flex',
+            alignItems: 'center',
+            px: 2,
+            gap: 2,
+            zIndex: 1200,
+          }}
+        >
+          <IconButton onClick={() => setMobileOpen(true)} sx={{ color: 'text.secondary' }}>
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h4" color="primary">
+            Race Manager
+          </Typography>
+        </Box>
+
+        {/* Slide-in drawer */}
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={() => setMobileOpen(false)}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            '& .MuiDrawer-paper': {
+              width,
+              bgcolor: 'background.paper',
+              borderRight: '1px solid',
+              borderColor: 'divider',
+              display: 'flex',
+              flexDirection: 'column',
+            },
+          }}
+        >
+          {drawerContent}
+        </Drawer>
+
+        {/* Bottom navigation */}
+        <Paper
+          sx={{
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1200,
+            borderTop: '1px solid',
+            borderColor: 'divider',
+            bgcolor: 'background.paper',
+          }}
+          elevation={0}
+        >
+          <BottomNavigation
+            value={activeRouteIndex}
+            sx={{ bgcolor: 'background.paper', height: 64 }}
+          >
+            {NAV_ITEMS.map((navItem) => (
+              <BottomNavigationAction
+                key={navItem.route}
+                label={navItem.label}
+                icon={navItem.icon}
+                onClick={() => navigate(navItem.route)}
+                sx={{
+                  color: 'text.disabled',
+                  '&.Mui-selected': { color: 'primary.main' },
+                  minWidth: 0,
+                }}
+              />
+            ))}
+          </BottomNavigation>
+        </Paper>
+      </>
+    )
+  }
+
+  // ── Desktop layout ─────────────────────────────────────────────
+  return (
+    <Drawer
+      variant="permanent"
+      sx={{
+        width,
+        flexShrink: 0,
+        '& .MuiDrawer-paper': {
+          width,
+          boxSizing: 'border-box',
+          bgcolor: 'background.paper',
+          borderRight: '1px solid',
+          borderColor: 'divider',
+          display: 'flex',
+          flexDirection: 'column',
+        },
+      }}
+    >
+      {drawerContent}
     </Drawer>
   )
 }
